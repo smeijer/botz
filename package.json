@@ -1,0 +1,87 @@
+{
+  "name": "botz",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Stephan Meijer",
+  "main": "dist/index.js",
+  "module": "dist/botz.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "analyze": "size-limit --why",
+    "build": "dts build",
+    "build-storybook": "build-storybook",
+    "lint": "dts lint",
+    "prepare": "dts build && husky install",
+    "size": "size-limit",
+    "start": "dts watch",
+    "storybook": "start-storybook -p 6006",
+    "test": "dts test --passWithNoTests"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "lint-staged": {
+    "*.{md,json,yml,yaml}": [
+      "prettier -w"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "prettier -w",
+      "node dist/index.js lint --fix"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "./jest.setup.js"
+    ]
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "size-limit": [
+    {
+      "path": "dist/botz.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/botz.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@size-limit/preset-small-lib": "^7.0.8",
+    "@storybook/addon-essentials": "^6.5.8",
+    "@storybook/addon-info": "^5.3.21",
+    "@storybook/addon-links": "^6.5.8",
+    "@storybook/addons": "^6.5.8",
+    "@storybook/react": "^6.5.8",
+    "@testing-library/react": "^13.3.0",
+    "@tsconfig/create-react-app": "^1.0.2",
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/react": "^18.0.12",
+    "@types/react-dom": "^18.0.5",
+    "babel-loader": "^8.2.5",
+    "dts-cli": "^1.5.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-is": "^18.1.0",
+    "size-limit": "^7.0.8",
+    "tiny-invariant": "^1.2.0",
+    "tiny-warning": "^1.0.3",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.3"
+  }
+}
