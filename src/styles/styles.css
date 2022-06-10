@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+:root {
+  --botz-font-family: 'inter', 'system-ui', sans-serif;
+  --botz-font-size: 14px;
+  --botz-color-primary: rgb(82, 37, 193);
+  --botz-color-primary-dark: rgb(46, 21, 107);
+  --botz-color-input-shadow: rgb(82, 37, 193, 0.15);
+  --botz-color-user-bubble: rgba(0, 0, 0, 0.95);
+  --botz-bg-user-bubble: rgb(245, 245, 245);
+  --botz-color-bot-bubble: rgba(255, 255, 255, 0.95);
+  --botz-bg-bot-bubble: var(--botz-color-primary);
+  --botz-color-error-bubble: rgb(255, 255, 255);
+  --botz-bg-error-bubble: rgb(255, 67, 0);
+}
+
+.botz-root {
+  position: fixed;
+  z-index: 2147000000;
+  right: 20px;
+  bottom: 20px;
+  display: block;
+}
+
+.botz-logo {
+  font-size: 14px;
+  font-family: var(--botz-font-family);
+  color: white;
+}
+
+.botz-launcher-button {
+  display: flex;
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  border: none;
+  background: var(--botz-color-primary);
+  box-shadow: rgb(0 0 0 / 6%) 0 1px 6px 0, rgb(0 0 0 / 16%) 0 2px 32px 0;
+  cursor: pointer;
+}
+
+.botz-launcher-button > svg {
+  position: absolute;
+  transition: transform 0.25s;
+}
+
+.botz-launcher-button > svg:first-child {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+.botz-launcher-button > svg:last-child {
+  opacity: 0;
+  transform: rotate(30deg) scale(0);
+}
+
+.botz-launcher-button[data-open='true'] > svg:first-child {
+  opacity: 0;
+  transform: rotate(-60deg) scale(0);
+}
+
+.botz-launcher-button[data-open='true'] > svg:last-child {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+.botz-messenger-frame {
+  position: fixed;
+  z-index: -1;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 5px 40px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(25px);
+  transition: all 0.25s ease;
+}
+
+@media (min-width: 450px) {
+  .botz-messenger-frame {
+    right: 20px;
+    bottom: 100px;
+    width: 376px;
+    height: calc(100% - 160px);
+    max-height: 700px;
+    border-radius: 8px;
+  }
+}
+
+.botz-messenger-frame[data-open='true'] {
+  z-index: 2147000000;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+@media (min-width: 450px) {
+  .botz-messenger-frame[data-open='true'] {
+    width: 376px;
+    height: calc(100% - 120px);
+    min-height: 250px;
+  }
+}
+
+.botz-messenger-frame-header {
+  flex: none;
+  padding: 24px 24px 48px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--botz-color-primary) 0%,
+    var(--botz-color-primary-dark, var(--botz-color-primary)) 100%
+  );
+}
+
+.botz-messenger-frame-header > svg {
+  height: 24px;
+  fill: white;
+}
+
+.botz-conversation {
+  display: flex;
+  overflow: hidden scroll;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 24px;
+  scrollbar-gutter: stable;
+}
+
+.botz-composer {
+  position: relative;
+  height: 0;
+  min-height: 0;
+  max-height: 0;
+  flex: none;
+  border-top: 1px solid rgb(230, 230, 230);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.botz-composer[data-visible='true'] {
+  height: auto;
+  min-height: 56px;
+  max-height: 200px;
+  opacity: 1;
+}
+
+.botz-form-closed {
+  height: 0;
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.botz-text-field > textarea,
+.botz-text-field > pre {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  max-height: 200px;
+  box-sizing: border-box;
+  padding: 18px 100px 18px 29px;
+  margin: 0;
+  background-color: rgb(255, 255, 255);
+  font-family: var(--botz-font-family);
+  font-size: var(--botz-font-size);
+  font-weight: normal;
+  line-height: 1.33;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.botz-text-field > textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  color: black;
+  resize: none;
+  transition: box-shadow 0.1s ease;
+}
+
+.botz-text-field > textarea::placeholder {
+  opacity: 0.5;
+}
+
+.botz-text-field > textarea:focus {
+  box-shadow: var(--botz-color-input-shadow) 0 0 100px 0;
+  outline: none;
+}
+
+.botz-text-field > pre {
+  visibility: hidden;
+}
+
+.botz-send-button {
+  position: absolute;
+  top: 0;
+  right: 16px;
+  height: 58px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+}
+
+.botz-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 24px;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+@media (min-width: 450px) {
+  .botz-close-button {
+    opacity: 0;
+  }
+}
+
+.botz-message-bubble {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.botz-message-bubble > div {
+  display: inline-block;
+  max-width: 75%;
+  padding: 16px;
+  background-color: var(--botz-bg-user-bubble);
+  border-radius: 8px;
+  color: var(--botz-color-user-bubble);
+  font-size: var(--botz-font-size);
+  font-family: var(--botz-font-family);
+  line-height: 1.4;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.botz-message-bubble[data-align='right'] {
+  justify-content: end;
+}
+
+.botz-message-bubble[data-align='right'] > div {
+  background-color: var(--botz-bg-bot-bubble);
+  color: var(--botz-color-bot-bubble);
+}
+
+.botz-message-bubble[data-variant='error'] > div {
+  background-color: var(--botz-bg-error-bubble);
+  color: var(--botz-color-error-bubble);
+}
