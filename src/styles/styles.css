@@ -245,6 +245,15 @@
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
+
+  transform: translateY(24px);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.botz-message-bubble[data-visible='true'] > div {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .botz-message-bubble[data-align='right'] {

@@ -1,6 +1,5 @@
-// import css from '@components/ContactForm/ContactForm.module.css';
-import { ChatBubbleIcon } from '../icons/chat-bubble-icon';
-import { ChevronDownIcon } from '../icons/chevron-down-icon';
+import { ChatBubbleIcon } from './icons/chat-bubble-icon';
+import { ChevronDownIcon } from './icons/chevron-down-icon';
 
 import React from 'react';
 

@@ -51,11 +51,11 @@
   "size-limit": [
     {
       "path": "dist/botz.cjs.production.min.js",
-      "limit": "20 KB"
+      "limit": "6 KB"
     },
     {
       "path": "dist/botz.esm.js",
-      "limit": "15 KB"
+      "limit": "6 KB"
     }
   ],
   "devDependencies": {
@@ -84,7 +84,5 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.3"
   },
-  "dependencies": {
-    "motion": "^10.10.0"
-  }
+  "dependencies": {}
 }

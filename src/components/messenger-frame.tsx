@@ -1,16 +1,15 @@
 import { useIsVisible } from '../hooks/use-is-visible';
-import { FlowEvent, Message, useChatBot } from '../hooks/use-chat-bot';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { TimesIcon } from '../icons/times-icon';
-
-import { animate, spring } from 'motion';
-import { mix } from '@motionone/utils';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { TimesIcon } from './icons/times-icon';
 import { Composer } from './composer';
-
-const messageStyle = {
-  transform: `translateY(-50px)`,
-  opacity: 0,
-};
+import { Botz, Message } from '../lib/botz';
+import { BotzStatus } from '../hooks/use-botz';
 
 interface MessageProps extends Message {}
 
@@ -21,14 +20,9 @@ function MessageBubble({ author, body, variant }: MessageProps) {
     const target = ref.current;
     if (!target) return;
 
-    animate(
-      (progress) => {
-        const y = Math.abs(0 - mix(8, 0, progress));
-        target.style.transform = `translateY(${y}px)`;
-        target.style.opacity = String(mix(0, 1, progress));
-      },
-      { duration: 0.5, easing: spring() }
-    );
+    requestAnimationFrame(() => {
+      target.parentElement!.dataset.visible = 'true';
+    });
   }, [ref]);
 
   return (
@@ -37,9 +31,7 @@ function MessageBubble({ author, body, variant }: MessageProps) {
       data-align={author === 'bot' ? 'right' : 'left'}
       data-variant={variant}
     >
-      <div ref={ref} style={messageStyle}>
-        {body}
-      </div>
+      <div ref={ref}>{body}</div>
     </div>
   );
 }
@@ -47,23 +39,37 @@ function MessageBubble({ author, body, variant }: MessageProps) {
 interface MessengerFrameProps {
   isOpen?: boolean;
   close?: () => void;
-  flow: FlowEvent[];
   logo?: ReactNode;
+  bot: Botz;
+  status: BotzStatus;
 }
 
 export function MessengerFrame({
   isOpen,
   close,
-  flow,
+  bot,
   logo,
+  status,
 }: MessengerFrameProps) {
   const isVisible = useIsVisible({ open: isOpen, timeout: 3000 });
-  const { messages, addMessage, status, step } = useChatBot({ flow });
   const scrollable = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [placeholder, setPlaceholder] = useState('Send a message…');
+
+  useEffect(() => {
+    bot.on('message', (message) => {
+      setMessages((c) => [...c, message]);
+    });
+
+    bot.on('question', (question) => {
+      setPlaceholder(question);
+    });
+  }, [bot]);
 
   useEffect(() => {
     const target = scrollable.current;
     if (!target) return;
+
     requestAnimationFrame(() =>
       target.scrollTo({
         top: target.scrollHeight,
@@ -72,8 +78,13 @@ export function MessengerFrame({
     );
   }, [messages.length, scrollable, isVisible]);
 
-  const placeholder =
-    status === 'busy' ? '…' : step?.placeholder || 'Send a message…';
+  const handleMessage = useCallback(
+    (message: string) => {
+      if (message.trim().length === 0) return;
+      bot.parse(message);
+    },
+    [bot]
+  );
 
   return (
     <div data-open={isOpen} className="botz-messenger-frame">
@@ -100,11 +111,11 @@ export function MessengerFrame({
             ))}
           </div>
 
-          <div data-visible={status !== 'done'} className="botz-composer">
+          <div data-visible={status !== 'gone'} className="botz-composer">
             <Composer
               disabled={status !== 'idle'}
               placeholder={placeholder}
-              onSubmit={addMessage}
+              onSubmit={handleMessage}
             />
           </div>
         </>
