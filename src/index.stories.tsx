@@ -1,9 +1,8 @@
-import { Botz } from './index';
-import { FlowEvent } from './hooks/use-chat-bot';
+import { ChatFn, FloatingWidget } from './index';
 
 export default {
   title: 'Botz',
-  component: Botz,
+  component: FloatingWidget,
 };
 
 async function createSupportTicket({ name, email, message }: any) {
@@ -14,55 +13,57 @@ async function createSupportTicket({ name, email, message }: any) {
     message,
   };
 
-  return { ticket, error: '' };
+  if (message === 'throw') throw new Error('hmmm');
+
+  return ticket;
 }
 
-const chatFlow: FlowEvent[] = [
-  { field: 'message', placeholder: 'Write a message…' },
-  {
-    field: 'name',
-    placeholder: 'Please enter your name…',
-    enter: async ({ say }) => {
-      await say(
-        'Hi! Thank you for your message. Can you answer a few questions for me, so we can help you?'
-      );
-      await say("Let's start with your name. How should we call you?");
-    },
-  },
-  {
-    field: 'email',
-    placeholder: 'Please enter your email…',
-    enter: async ({ values: { name }, say }) => {
-      await say(`Thanks, ${name}! At what email address can we reach you?`);
-    },
-    validate: async (message, { say }) => {
-      if (/^.+@.+\.+.+$/.test(message)) return true;
+const chat: ChatFn = async (bot) => {
+  const data = { name: '', email: '', message: '' };
 
-      await say(
+  await bot.say(
+    'Hi! Thanks for reaching out. Before we get started, can you please tell me your name?'
+  );
+
+  data.name = await bot.ask(`How should we call you?`, {
+    validate: async (value) => value.trim().length > 0,
+  });
+
+  await bot.say(
+    `Thanks, ${data.name}! At what email address can we reach you?`
+  );
+
+  data.email = await bot.ask(`What's your email?`, {
+    validate: async (value) => {
+      if (/^.+@.+\.+.+$/.test(value)) return true;
+
+      await bot.say(
         'Sorry, this does not look like a proper email address. Wanna try again?'
       );
+
       return false;
     },
-  },
-  {
-    enter: ({ say }) =>
-      say("Awesome! I'll forward this to our support staff. One sec."),
-    action: async ({ values, say }) => {
-      const { error, ticket } = await createSupportTicket(values);
-      if (/Too Many Requests/i.test(error)) {
-        await say(
-          `Sorry, we've received a bunch of support requests from your IP address in a very short time. Please try again later.`,
-          { variant: 'error' }
-        );
-      } else if (error) {
-        await say(`Sorry, something went wrong!`);
-        await say(error, { variant: 'error' });
-      } else {
-        await say(`Done! Your ticket number is #${ticket.id}.`);
-        await say(`Our human staff will contact you soon. Thanks again!`);
-      }
-    },
-  },
-];
+  });
 
-export const Basic = () => <Botz flow={chatFlow} isOpen />;
+  await bot.say(`Sweet! So… what can we help you with?`);
+  data.message = await bot.ask(`Write a message…`, {
+    validate: (value) => {
+      return value.trim().length > 0;
+    },
+  });
+
+  await bot.say(`Awesome! I'll forward this to our support staff. One sec.`);
+
+  try {
+    const ticket = await createSupportTicket(data);
+    await bot.say(
+      `Done! your ticket number is #${ticket.id}. Our human staff will contact you soon. Thanks again!`
+    );
+  } catch (e) {
+    await bot.alert(
+      `Sorry, something went wrong! Your message has not been sent.`
+    );
+  }
+};
+
+export const Basic = () => <FloatingWidget chat={chat} isOpen />;

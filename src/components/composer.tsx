@@ -1,6 +1,5 @@
 import React, {
   ChangeEventHandler,
-  FormEvent,
   FormEventHandler,
   KeyboardEventHandler,
   useEffect,
@@ -9,7 +8,7 @@ import React, {
 } from 'react';
 
 interface ComposerProps {
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (message: string) => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -27,7 +26,7 @@ export function Composer({
     try {
       setIsSubmitting(true);
       setValue('');
-      await onSubmit(value);
+      onSubmit(value);
     } finally {
       setIsSubmitting(false);
     }
@@ -49,7 +48,6 @@ export function Composer({
     setValue(e.target.value);
 
   useEffect(() => {
-    console.log('focus', disabled, ref.current);
     if (disabled || !ref.current) return;
     ref.current.focus();
   }, [disabled, ref]);
