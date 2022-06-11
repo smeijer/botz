@@ -1,23 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { LauncherButton } from './launcher-button';
 import { MessengerFrame } from './messenger-frame';
-import { FlowEvent } from '../hooks/use-chat-bot';
+import { ChatFn, useBotz } from '../hooks/use-botz';
 
-type Botz = (cmd: 'open' | 'close' | 'toggle') => void;
+type WindowControls = (cmd: 'open' | 'close' | 'toggle') => void;
 
 declare global {
   interface Window {
-    botz?: Botz;
+    botz?: WindowControls;
   }
 }
 
-export interface BotzProps {
+export interface FloatingWidgetProps {
   isOpen?: boolean;
-  flow: FlowEvent[];
+  logo?: ReactNode;
+  chat: ChatFn;
 }
 
-export function Botz({ isOpen: initialOpen = false, flow }: BotzProps) {
+export function FloatingWidget({
+  isOpen: initialOpen = false,
+  logo,
+  chat,
+}: FloatingWidgetProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
+  const [bot, status] = useBotz(chat);
 
   useEffect(() => {
     if (typeof window === 'undefined' || window.botz) return;
@@ -37,7 +43,9 @@ export function Botz({ isOpen: initialOpen = false, flow }: BotzProps) {
       <MessengerFrame
         isOpen={isOpen}
         close={() => setIsOpen(false)}
-        flow={flow}
+        bot={bot}
+        status={status}
+        logo={logo}
       />
     </div>
   );

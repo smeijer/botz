@@ -1,15 +1,15 @@
 import React, {
   ChangeEventHandler,
-  FormEvent,
   FormEventHandler,
   KeyboardEventHandler,
   useEffect,
   useRef,
   useState,
 } from 'react';
+import { PaperPlaneIcon } from './icons/paper-plane-icon';
 
 interface ComposerProps {
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (message: string) => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -27,7 +27,7 @@ export function Composer({
     try {
       setIsSubmitting(true);
       setValue('');
-      await onSubmit(value);
+      onSubmit(value);
     } finally {
       setIsSubmitting(false);
     }
@@ -49,7 +49,6 @@ export function Composer({
     setValue(e.target.value);
 
   useEffect(() => {
-    console.log('focus', disabled, ref.current);
     if (disabled || !ref.current) return;
     ref.current.focus();
   }, [disabled, ref]);
@@ -75,23 +74,7 @@ export function Composer({
       </div>
 
       <button className="botz-send-button" type="submit">
-        {isSubmitting ? (
-          '...'
-        ) : (
-          <svg
-            focusable="false"
-            aria-hidden="true"
-            viewBox="0 0 16 16"
-            fill="rgb(82, 37, 193)"
-            width={16}
-            height={16}
-          >
-            <path
-              d="M1.388 15.77c-.977.518-1.572.061-1.329-1.019l1.033-4.585c.123-.543.659-1.034 1.216-1.1l6.195-.72c1.648-.19 1.654-.498 0-.687l-6.195-.708c-.55-.063-1.09-.54-1.212-1.085L.056 1.234C-.187.161.408-.289 1.387.231l12.85 6.829c.978.519.98 1.36 0 1.88l-12.85 6.83z"
-              fillRule="evenodd"
-            />
-          </svg>
-        )}
+        {isSubmitting ? '...' : <PaperPlaneIcon />}
       </button>
     </form>
   );

@@ -3,9 +3,9 @@
 :root {
   --botz-font-family: 'inter', 'system-ui', sans-serif;
   --botz-font-size: 14px;
-  --botz-color-primary: rgb(82, 37, 193);
-  --botz-color-primary-dark: rgb(46, 21, 107);
-  --botz-color-input-shadow: rgb(82, 37, 193, 0.15);
+  --botz-color-primary: rgb(14, 165, 233);
+  --botz-color-primary-dark: rgb(3, 105, 161);
+  --botz-color-input-shadow: rgb(241, 245, 249);
   --botz-color-user-bubble: rgba(0, 0, 0, 0.95);
   --botz-bg-user-bubble: rgb(245, 245, 245);
   --botz-color-bot-bubble: rgba(255, 255, 255, 0.95);
@@ -209,6 +209,14 @@
   padding: 8px;
   border: none;
   background: transparent;
+  color: var(--botz-color-primary);
+  cursor: pointer;
+}
+
+.botz-send-button:hover,
+.botz-send-button:focus {
+  outline: none;
+  color: var(--botz-color-primary-dark);
 }
 
 .botz-close-button {
@@ -219,6 +227,8 @@
   color: white;
   opacity: 1;
   transition: opacity 0.25s ease;
+  border: none;
+  background: transparent;
 }
 
 @media (min-width: 450px) {
@@ -245,6 +255,15 @@
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
+
+  transform: translateY(24px);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.botz-message-bubble[data-visible='true'] > div {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .botz-message-bubble[data-align='right'] {

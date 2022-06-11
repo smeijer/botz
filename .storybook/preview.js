@@ -1,4 +1,4 @@
-import '../src/styles/styles.css';
+import '../styles.css';
 
 // https://storybook.js.org/docs/react/writing-stories/parameters#global-parameters
 export const parameters = {
