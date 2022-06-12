@@ -1,9 +1,11 @@
 import { ChatFn, FloatingWidget } from './index';
 
-export default {
+const meta = {
   title: 'Botz',
   component: FloatingWidget,
 };
+
+export default meta;
 
 async function createSupportTicket({ name, email, message }: any) {
   const ticket = {
