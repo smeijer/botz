@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { LauncherButton } from './launcher-button';
 import { MessengerFrame } from './messenger-frame';
 import { ChatFn, useBotz } from '../hooks/use-botz';
@@ -13,11 +13,13 @@ declare global {
 
 export interface FloatingWidgetProps {
   isOpen?: boolean;
+  logo?: ReactNode;
   chat: ChatFn;
 }
 
 export function FloatingWidget({
   isOpen: initialOpen = false,
+  logo,
   chat,
 }: FloatingWidgetProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
@@ -43,6 +45,7 @@ export function FloatingWidget({
         close={() => setIsOpen(false)}
         bot={bot}
         status={status}
+        logo={logo}
       />
     </div>
   );
