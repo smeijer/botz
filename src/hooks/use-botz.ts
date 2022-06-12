@@ -25,7 +25,7 @@ export function useBotz(chat: ChatFn): [Botz, BotzStatus] {
       .finally(() => {
         setStatus('gone');
       });
-  }, [bot]);
+  }, [bot, chat]);
 
   return [bot, status];
 }
