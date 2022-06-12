@@ -219,6 +219,8 @@
   color: white;
   opacity: 1;
   transition: opacity 0.25s ease;
+  border: none;
+  background: transparent;
 }
 
 @media (min-width: 450px) {
