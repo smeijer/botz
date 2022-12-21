@@ -11,6 +11,13 @@ import { Composer } from './composer';
 import { Botz, Message } from '../lib/botz';
 import { BotzStatus } from '../hooks/use-botz';
 
+const parseMarkDown = (text: string) => {
+  return text.replace(
+    /\[([^\[]+)]\((.*)\)/gm,
+    '<a target="_blank" href="$2">$1</a>'
+  );
+};
+
 interface MessageProps extends Message {}
 
 function MessageBubble({ author, body, variant }: MessageProps) {
@@ -31,7 +38,14 @@ function MessageBubble({ author, body, variant }: MessageProps) {
       data-align={author === 'bot' ? 'right' : 'left'}
       data-variant={variant}
     >
-      <div ref={ref}>{body}</div>
+      {author === 'bot' ? (
+        <div
+          ref={ref}
+          dangerouslySetInnerHTML={{ __html: parseMarkDown(body) }}
+        />
+      ) : (
+        <div ref={ref}>{body}</div>
+      )}
     </div>
   );
 }

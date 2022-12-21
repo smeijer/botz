@@ -242,6 +242,14 @@
   margin-bottom: 20px;
 }
 
+.botz-message-bubble a {
+  color: inherit;
+  text-decoration: underline;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: bolder;
+}
+
 .botz-message-bubble > div {
   display: inline-block;
   max-width: 75%;
